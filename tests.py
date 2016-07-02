@@ -10,6 +10,9 @@ class TestingBadRequests(unittest.TestCase):
         r = self.app.get('/', query_string="board=AAA")
         self.assertEqual(r.status_code, 400)
 
+        r = self.app.get('/', query_string="board=       oxx") # 10 characters
+        self.assertEqual(r.status_code, 400)
+
     def test_400_on_no_board_provided(self):
         r = self.app.get('/', query_string="bored=xx oo xox")
         self.assertEqual(r.status_code, 400)

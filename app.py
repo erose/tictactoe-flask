@@ -10,7 +10,7 @@ player: the character 'x' or 'o'
 
 def is_valid(board):
     """ Checks both whether the board is a valid representation of a tictacoe board, and whether it could be o's turn. """
-    return re.match(r'[o x]{9}', board) and (board.count("x") - board.count("o") in [0, 1])
+    return re.match(r'^[o x]{9}$', board) and (board.count("x") - board.count("o") in [0, 1])
 def is_tie(board):
     return not (" " in board)
 def is_winner(board, player):
