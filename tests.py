@@ -37,9 +37,11 @@ class TestingGoodRequests(unittest.TestCase):
     def setUp(self):
         self.app = app.app.test_client()
 
-    def test_200_on_blank_board(self):
-        r = self.app.get('/', query_string="board=         ")
+    def test_easy_board(self):
+        # Lincoln's example given in the google doc.
+        r = self.app.get('/', query_string="board= xxo  o  ")
         self.assertEqual(r.status_code, 200)
+        self.assertEqual(r.get_data(), 'oxxo  o  ')
 
 class TestingOptimality(unittest.TestCase):
     def test_score_winning_and_losing_base_cases(self):
@@ -63,16 +65,6 @@ class TestingOptimality(unittest.TestCase):
     def test_score_blank_board_is_tie(self):
         self.assertEqual(score('         ', player='o'), 0)
         self.assertEqual(score('         ', player='x'), 0)
-
-class IntegrationTests(unittest.TestCase):
-    def setUp(self):
-        self.app = app.app.test_client()
-
-    def test_easy_board(self):
-        # Lincoln's example given in the google doc.
-        r = self.app.get('/', query_string="board= xxo  o  ")
-        self.assertEqual(r.status_code, 200)
-        self.assertEqual(r.get_data(), 'oxxo  o  ')
 
 if __name__ == "__main__":
     unittest.main()
