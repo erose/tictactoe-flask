@@ -3,6 +3,11 @@ from flask import request, abort
 import re
 app = Flask(__name__)
 
+"""
+board: a nine-character string of spaces, x's and o's (lowercase).
+player: the character 'x' or 'o'
+"""
+
 def is_valid(board):
     """ Checks both whether the board is a valid representation of a tictacoe board, and whether it could be o's turn. """
     return re.match(r'[o x]{9}', board) and (board.count("x") - board.count("o") in [0, 1])
@@ -29,10 +34,12 @@ def is_winner(board, player):
 def other_player(player):
     return {'o': 'x', 'x': 'o'}[player]
 def move(board, index, player):
+    """ Executes a move by player at index, returning a new board. """
     splits = list(board)
     splits[index] = player
     return "".join(splits)
 def candidate_boards(board, player):
+    """ Returns a list of all boards that could result from player's next move. """
     return [move(board, i, player) for i, char in enumerate(board) if char == " "]
 def score(board, player):
     """ Returns -1 if player will lose on this board, 0 if player can tie, and 1 if player can win. """
@@ -44,8 +51,7 @@ def score(board, player):
     if is_tie(board):
         return 0
 
-    candidates = candidate_boards(board, player)
-    return max(-1 * score(candidate, opp) for candidate in candidates)
+    return max(-1 * score(candidate, opp) for candidate in candidate_boards(board, player))
 
 @app.route('/')
 def main():
@@ -53,6 +59,9 @@ def main():
     if board is None or not is_valid(board) or is_tie(board) or is_winner(board, 'x') or is_winner(board, 'o'):
        abort(400) 
 
+    # To play optimally, we return the argmax of score over all options (accounting for the fact that opp winning is us losing).
     candidates = candidate_boards(board, 'o')
     return max(candidates, key=lambda candidate: -1 * score(candidate, 'x'))
+
+    # Non-optimal behavior -- just return the first candidate move we come up with.
     # return candidate_boards(board, player='o')[0]
