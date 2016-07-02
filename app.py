@@ -5,7 +5,8 @@ app = Flask(__name__)
 
 def is_valid(board):
     # Checks both whether the board is a valid representation of a tictacoe board, and whether it could be o's turn.
-    return not re.match(r'[o x]{9}', board) and not (board.count("x") - board.count("o") in [0, 1])
+    print board
+    return not re.match(r'[o x]{9}', board) and (board.count("x") - board.count("o") in [0, 1])
 def is_tie(board):
     return not (" " in board)
 def is_winner(board, player):
