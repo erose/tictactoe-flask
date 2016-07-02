@@ -43,6 +43,13 @@ class TestingGoodRequests(unittest.TestCase):
         self.assertEqual(r.status_code, 200)
         self.assertEqual(r.get_data(), 'oxxo  o  ')
 
+class TestingIsWinner(unittest.TestCase):
+    def test_winning_boards(self):
+        self.assertTrue(app.is_winner('xxxoo    ', player='x'))
+
+    def test_non_winning_boards(self):
+        self.assertFalse(app.is_winner('xx xooooo', player='x'))
+
 class TestingOptimality(unittest.TestCase):
     def test_score_winning_and_losing_base_cases(self):
         self.assertEqual(score('xxx      ', player='x'), 1)
